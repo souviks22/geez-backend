@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 import http from "http"
 
 import { Server as SocketIO } from "socket.io"
-import { userRouter } from "../routers/user.router"
+import { userRouter } from "../routers/user.router.js"
 
 process.loadEnvFile()
 
