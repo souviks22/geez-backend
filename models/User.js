@@ -12,7 +12,13 @@ const userSchema = new Schema({
         match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
     },
     image: {
-        type: String
+        type: String,
+        required: true
+    },
+    provider: {
+        type: String,
+        enum: ['google', 'github'],
+        required: true
     }
 })
 

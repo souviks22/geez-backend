@@ -12,8 +12,8 @@ export const getUserHandler = catchAsync(async (req, res) => {
 })
 
 export const newUserHandler = catchAsync(async (req, res) => {
-    const { name, email, image } = req.body
-    const user = new User({ name, email, image })
+    const { name, email, image, provider } = req.body
+    const user = new User({ name, email, image, provider })
     await user.save()
     res.status(201).json({
         success: true,
