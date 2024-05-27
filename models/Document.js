@@ -1,6 +1,10 @@
 import { Schema, model } from "mongoose"
 
 const documentSchema = new Schema({
+    title: {
+        type: String,
+        required: true
+    },
     owner: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -8,12 +12,18 @@ const documentSchema = new Schema({
     },
     content: {
         type: String,
-        required: true
+        required: true,
+        default: ''
     },
     access: {
         type: String,
         enum: ['private', 'public'],
         default: 'private'
+    },
+    publicMode: {
+        type: String,
+        enum: ['read-only', 'read-and-write'],
+        default: 'read-only'
     },
     sharedTo: [
         {

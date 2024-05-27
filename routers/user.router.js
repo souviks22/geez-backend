@@ -1,30 +1,40 @@
 import { Router } from "express"
 import { body } from "express-validator"
-import { getUserHandler, newUserHandler, updateUserHandler, deleteUserHandler } from "../controllers/user.controller.js"
-import { isUniqueUser, isUpdatable, userDoesExist } from "../middlewares/users.js"
+import { signupHandler, signinHandler, getUserHandler, updateUserHandler, deleteUserHandler } from "../controllers/user.controller.js"
+import { isUniqueUser, isUserPresent, isUpdatable, isAuthenticated, isSelfAuthorized } from "../middlewares/users.js"
+
 export const userRouter = Router()
 
-userRouter.get('/:userId',
-    userDoesExist,
-    getUserHandler
-)
-
-userRouter.post('/new-user',
+userRouter.post('/signup',
+    body('id').exists(),
     body('name').exists(),
     body('email').exists(),
     body('image').exists(),
-    body('provider').exists(),
     isUniqueUser,
-    newUserHandler
+    signupHandler
+)
+
+userRouter.post('/signin',
+    body('id').exists(),
+    isUserPresent,
+    signinHandler
+)
+
+userRouter.get('/:userId',
+    isAuthenticated,
+    getUserHandler
 )
 
 userRouter.put('/:userId',
     body('update').exists(),
     isUpdatable,
+    isAuthenticated,
+    isSelfAuthorized,
     updateUserHandler
 )
 
 userRouter.delete('/:userId',
-    userDoesExist,
+    isAuthenticated,
+    isSelfAuthorized,
     deleteUserHandler
 )
