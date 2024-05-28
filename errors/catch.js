@@ -21,8 +21,17 @@ export const catchAsync = callback => {
     }
 }
 
-export const catchSocket = callback => {
+export const catchIO = callback => {
     return (socket, next) => {
         callback(socket, next).catch(error => next(error))
+    }
+}
+
+export const catchSocket = callback => {
+    return (socket, ...parameter) => {
+        callback(socket, ...parameter).catch(error => {
+            socket.emit('error', error)
+            socket.disconnect()
+        })
     }
 }

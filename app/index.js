@@ -6,7 +6,7 @@ import cors from "cors"
 import { Server as SocketIO } from "socket.io"
 import { userRouter } from "../routers/user.router.js"
 import { documentRouter } from "../routers/document.router.js"
-import { updateDocumentBySocketHandler } from "../controllers/socket.controller.js"
+import { socketRouter } from "../routers/socket.router.js"
 
 process.loadEnvFile()
 
@@ -23,6 +23,7 @@ app.use('/documents', documentRouter)
 
 const server = http.createServer(app)
 const io = new SocketIO(server, { cors: '*' })
+socketRouter(io)
 
 server.listen(process.env.PORT, () => {
     console.log(`Server is active at PORT ${process.env.PORT}`)
