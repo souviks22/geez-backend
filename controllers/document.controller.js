@@ -1,5 +1,5 @@
 import { Document } from "../models/Document.js"
-import { catchAsync } from "../errors/async.js"
+import { catchAsync } from "../errors/catch.js"
 
 export const getDocumentHandler = catchAsync(async (req, res) => {
     const { docId } = req.params

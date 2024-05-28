@@ -1,5 +1,5 @@
 import { User } from "../models/User.js"
-import { catchAsync } from "../errors/async.js"
+import { catchAsync } from "../errors/catch.js"
 
 import jwt from "jsonwebtoken"
 
@@ -13,7 +13,7 @@ export const isAuthenticated = catchAsync(async (req, res, next) => {
   const accessToken = split[1]
   const { id } = jwt.verify(accessToken, process.env.NEXTAUTH_SECRET)
   const user = await User.findOne({ id })
-  if (!user) throw new Error('The corresponding user does not exist.')
+  if (!user) throw new Error('Authorization token failed.')
   next()
 })
 

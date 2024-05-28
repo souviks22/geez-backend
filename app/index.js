@@ -23,11 +23,6 @@ app.use('/documents', documentRouter)
 
 const server = http.createServer(app)
 const io = new SocketIO(server, { cors: '*' })
-io.on('connect', socket => {
-    console.log(socket.id)
-    updateDocumentBySocketHandler(socket)
-})
-io.on('error', console.error)
 
 server.listen(process.env.PORT, () => {
     console.log(`Server is active at PORT ${process.env.PORT}`)

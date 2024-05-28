@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { body } from "express-validator"
 import { signupHandler, signinHandler, getUserHandler, updateUserHandler, deleteUserHandler } from "../controllers/user.controller.js"
-import { isUniqueUser, isUserPresent, isUpdatable, isAuthenticated, isSelfAuthorized } from "../middlewares/users.js"
+import { isUniqueUser, isUserPresent, isUpdatable, isAuthenticated, isSelfAuthorized } from "../middlewares/user.middleware.js"
 
 export const userRouter = Router()
 

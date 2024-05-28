@@ -1,5 +1,5 @@
 import { User } from "../models/User.js"
-import { catchAsync } from "../errors/async.js"
+import { catchAsync } from "../errors/catch.js"
 
 import jwt from "jsonwebtoken"
 
