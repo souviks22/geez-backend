@@ -20,3 +20,9 @@ export const catchAsync = callback => {
         }
     }
 }
+
+export const catchSocket = callback => {
+    return (socket, next) => {
+        callback(socket, next).catch(error => next(error))
+    }
+}

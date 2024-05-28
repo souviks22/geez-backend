@@ -1,5 +1,6 @@
 import { Document } from "../models/Document.js"
 import { catchAsync } from "../errors/catch.js"
+import { getUserObjectId } from "../helper/auth.js"
 
 export const getDocumentHandler = catchAsync(async (req, res) => {
     const { docId } = req.params
@@ -12,8 +13,9 @@ export const getDocumentHandler = catchAsync(async (req, res) => {
 })
 
 export const newDocumentHandler = catchAsync(async (req, res) => {
-    const { owner } = req.body
-    const document = new Document({ owner })
+    const { title, content } = req.body
+    const _id = getUserObjectId(req)
+    const document = new Document({ owner: _id, title, content })
     await document.save()
     res.status(201).json({
         success: true,

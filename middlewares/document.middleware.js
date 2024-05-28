@@ -1,9 +1,6 @@
 import { Document } from "../models/Document.js"
 import { catchAsync } from "../errors/catch.js"
-
-import jwt from "jsonwebtoken"
-
-process.loadEnvFile()
+import { getUserObjectId } from "../helper/auth.js"
 
 export const isDocPresent = catchAsync(async (req, res, next) => {
   const { docId } = req.params
@@ -14,10 +11,34 @@ export const isDocPresent = catchAsync(async (req, res, next) => {
 
 export const isAuthorizedToChangeSettings = catchAsync(async (req, res, next) => {
   const { docId } = req.params
-  const { id } = jwt.verify(req.headers['authorization'].split(' ')[1], process.env.NEXTAUTH_SECRET)
+  const _id = getUserObjectId(req)
   const { owner, sharedTo } = await Document.findById(docId)
-  if (id === owner) return next()
-  const shared = sharedTo.find(shared => shared.user === id)
+  if (_id === owner) return next()
+  const shared = sharedTo.find(shared => shared.user === _id)
   if (!shared || shared.mode !== 'co-owner') throw new Error('You are not authorized.')
+  next()
+})
+
+export const isUpdatable = catchAsync(async (req, res, next) => {
+  const { update } = req.body
+  const nonUpdatables = ['owner']
+  for (const key in update) {
+    for (const field of nonUpdatables) {
+      if (key === field) {
+        throw new Error(`You cannot change the existing ${key}.`)
+      }
+    }
+  }
+  next()
+})
+
+export const isPermitted = catchAsync(async (req, res, next) => {
+  const { docId } = req.params
+  const { owner, access, sharedTo } = await Document.findById(docId)
+  if (access === 'public') return next()
+  const _id = getUserObjectId(req)
+  if (_id === owner) return next()
+  const shared = sharedTo.find(shared => shared.user === _id)
+  if (!shared) throw new Error('You are not authorized.')
   next()
 })

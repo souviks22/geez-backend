@@ -10,21 +10,23 @@ export const signupHandler = catchAsync(async (req, res) => {
     const { id, name, email, image } = req.body
     const user = new User({ id, name, email, image })
     await user.save()
-    const accessToken = jwt.sign({ id }, process.env.NEXTAUTH_SECRET, { expiresIn: EXPIRATION_TIME })
+    const { _id } = user
+    const token = jwt.sign({ _id }, process.env.NEXTAUTH_SECRET, { expiresIn: EXPIRATION_TIME })
     res.status(201).json({
         success: true,
         message: 'We are pleased to have you.',
-        data: { accessToken }
+        data: { token }
     })
 })
 
 export const signinHandler = catchAsync(async (req, res) => {
     const { id } = req.body
-    const accessToken = jwt.sign({ id }, process.env.NEXTAUTH_SECRET, { expiresIn: EXPIRATION_TIME })
+    const { _id } = await User.findOne({ id })
+    const token = jwt.sign({ _id }, process.env.NEXTAUTH_SECRET, { expiresIn: EXPIRATION_TIME })
     res.status(201).json({
         success: true,
         message: 'We are obliged you are here.',
-        data: { accessToken }
+        data: { token }
     })
 })
 

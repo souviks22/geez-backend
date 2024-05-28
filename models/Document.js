@@ -12,8 +12,7 @@ const documentSchema = new Schema({
     },
     content: {
         type: String,
-        required: true,
-        default: ''
+        required: true
     },
     access: {
         type: String,

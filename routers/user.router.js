@@ -27,9 +27,9 @@ userRouter.get('/:userId',
 
 userRouter.put('/:userId',
     body('update').exists(),
-    isUpdatable,
     isAuthenticated,
     isSelfAuthorized,
+    isUpdatable,
     updateUserHandler
 )
 
