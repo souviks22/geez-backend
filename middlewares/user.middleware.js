@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken"
 
 process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
-export const isAuthenticated = catchAsync(async (req, res, next) => {
+export const isAuthenticated = catchAsync(async (req, _res, next) => {
   const { authorization } = req.headers
   if (!authorization) throw new Error('Authorization token failed.')
   const split = authorization.split(' ')
@@ -18,21 +18,21 @@ export const isAuthenticated = catchAsync(async (req, res, next) => {
   next()
 })
 
-export const isUniqueUser = catchAsync(async (req, res, next) => {
+export const isUniqueUser = catchAsync(async (req, _res, next) => {
   const { id } = req.body
   const user = await User.findOne({ id })
   if (user) throw new Error('User with the same credentials already exists.')
   next()
 })
 
-export const isUserPresent = catchAsync(async (req, res, next) => {
+export const isUserPresent = catchAsync(async (req, _res, next) => {
   const { id } = req.body
   const user = await User.findOne({ id })
   if (!user) throw new Error('The corresponding user does not exist.')
   next()
 })
 
-export const isUpdatable = catchAsync(async (req, res, next) => {
+export const isUpdatable = catchAsync(async (req, _res, next) => {
   const { update } = req.body
   const nonUpdatables = ['id', 'email']
   for (const key in update) {
@@ -45,7 +45,7 @@ export const isUpdatable = catchAsync(async (req, res, next) => {
   next()
 })
 
-export const isSelfAuthorized = catchAsync(async (req, res, next) => {
+export const isSelfAuthorized = catchAsync(async (req, _res, next) => {
   const { userId } = req.params
   const _id = getUserObjectId(req)
   const { id } = await User.findById(_id)

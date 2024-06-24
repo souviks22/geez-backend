@@ -2,14 +2,14 @@ import { Document } from "../models/Document.js"
 import { catchAsync } from "../errors/catch.js"
 import { getUserObjectId } from "../helper/auth.js"
 
-export const isDocPresent = catchAsync(async (req, res, next) => {
+export const isDocPresent = catchAsync(async (req, _res, next) => {
   const { docId } = req.params
   const document = await Document.findById(docId)
   if (!document) throw new Error('The document does not exist.')
   next()
 })
 
-export const isAuthorizedToChangeSettings = catchAsync(async (req, res, next) => {
+export const isAuthorizedToChangeSettings = catchAsync(async (req, _res, next) => {
   const { docId } = req.params
   const _id = getUserObjectId(req)
   const { owner, sharedTo } = await Document.findById(docId)
@@ -19,7 +19,7 @@ export const isAuthorizedToChangeSettings = catchAsync(async (req, res, next) =>
   next()
 })
 
-export const isUpdatable = catchAsync(async (req, res, next) => {
+export const isUpdatable = catchAsync(async (req, _res, next) => {
   const { update } = req.body
   const nonUpdatables = ['owner']
   for (const key in update) {
@@ -32,7 +32,7 @@ export const isUpdatable = catchAsync(async (req, res, next) => {
   next()
 })
 
-export const isPermitted = catchAsync(async (req, res, next) => {
+export const isPermitted = catchAsync(async (req, _res, next) => {
   const { docId } = req.params
   const { owner, access, sharedTo } = await Document.findById(docId)
   if (access === 'public') return next()
