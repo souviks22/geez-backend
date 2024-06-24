@@ -4,7 +4,7 @@ import { getUserObjectId } from "../helper/auth.js"
 
 import jwt from "jsonwebtoken"
 
-process.loadEnvFile()
+process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
 export const isAuthenticated = catchAsync(async (req, res, next) => {
   const { authorization } = req.headers

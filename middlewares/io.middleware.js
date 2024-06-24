@@ -3,7 +3,7 @@ import { catchIO } from "../errors/catch.js"
 
 import jwt from "jsonwebtoken"
 
-process.loadEnvFile()
+process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
 export const isAuthenticated = catchIO(async (socket, next) => {
   const { token } = socket.handshake.auth

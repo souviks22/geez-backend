@@ -3,7 +3,7 @@ import { catchAsync } from "../errors/catch.js"
 
 import jwt from "jsonwebtoken"
 
-process.loadEnvFile()
+process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 const EXPIRATION_TIME = '7d'
 
 export const signupHandler = catchAsync(async (req, res) => {

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 
-process.loadEnvFile()
+process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
 export const getUserObjectId = req => {
   const token = req.headers['authorization'].split(' ')[1]
