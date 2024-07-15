@@ -1,12 +1,12 @@
 import { Router } from "express"
-import { body } from "express-validator"
+import { body, cookie } from "express-validator"
 import { signupHandler, signinHandler, getUserHandler, updateUserHandler, deleteUserHandler } from "../controllers/user.controller.js"
 import { isUniqueUser, isUserPresent, isUpdatable, isAuthenticated, isSelfAuthorized } from "../middlewares/user.middleware.js"
 
 export const userRouter = Router()
 
 userRouter.post('/signup',
-    body('id').exists(),
+    body('oauthId').exists(),
     body('name').exists(),
     body('email').exists(),
     body('image').exists(),
@@ -15,18 +15,20 @@ userRouter.post('/signup',
 )
 
 userRouter.post('/signin',
-    body('id').exists(),
+    body('oauthId').exists(),
     isUserPresent,
     signinHandler
 )
 
 userRouter.get('/:userId',
+    cookie('token').exists(),
     isAuthenticated,
     getUserHandler
 )
 
 userRouter.put('/:userId',
     body('update').exists(),
+    cookie('token').exists(),
     isAuthenticated,
     isSelfAuthorized,
     isUpdatable,
@@ -34,6 +36,7 @@ userRouter.put('/:userId',
 )
 
 userRouter.delete('/:userId',
+    cookie('token').exists(),
     isAuthenticated,
     isSelfAuthorized,
     deleteUserHandler

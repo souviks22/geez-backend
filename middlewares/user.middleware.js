@@ -7,27 +7,24 @@ import jwt from "jsonwebtoken"
 process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
 export const isAuthenticated = catchAsync(async (req, _res, next) => {
-  const { authorization } = req.headers
-  if (!authorization) throw new Error('Authorization token failed.')
-  const split = authorization.split(' ')
-  if (split.length !== 2) throw new Error('Authorization token failed.')
-  const token = split[1]
+  const { token } = req.cookies
+  if (!token) throw new Error('Missing authorization details.')
   const { _id } = jwt.verify(token, process.env.NEXTAUTH_SECRET)
   const user = await User.findById(_id)
-  if (!user) throw new Error('Authorization token failed.')
+  if (!user) throw new Error('You are not authorized.')
   next()
 })
 
 export const isUniqueUser = catchAsync(async (req, _res, next) => {
-  const { id } = req.body
-  const user = await User.findOne({ id })
+  const { oauthId } = req.body
+  const user = await User.findOne({ oauthId })
   if (user) throw new Error('User with the same credentials already exists.')
   next()
 })
 
 export const isUserPresent = catchAsync(async (req, _res, next) => {
-  const { id } = req.body
-  const user = await User.findOne({ id })
+  const { oauthId } = req.body
+  const user = await User.findOne({ oauthId })
   if (!user) throw new Error('The corresponding user does not exist.')
   next()
 })
@@ -48,7 +45,7 @@ export const isUpdatable = catchAsync(async (req, _res, next) => {
 export const isSelfAuthorized = catchAsync(async (req, _res, next) => {
   const { userId } = req.params
   const _id = getUserObjectId(req)
-  const { id } = await User.findById(_id)
-  if (id !== userId) throw new Error('You are not authorized.')
+  const { oauthId } = await User.findById(_id)
+  if (oauthId !== userId) throw new Error('You are not authorized.')
   next()
 })

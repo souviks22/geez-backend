@@ -2,6 +2,7 @@ import express from "express"
 import mongoose from "mongoose"
 import http from "http"
 import cors from "cors"
+import cookieParser from "cookie-parser"
 
 import { Server as SocketIO } from "socket.io"
 import { userRouter } from "../routers/user.router.js"
@@ -18,6 +19,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 app.use('/users', userRouter)
 app.use('/documents', documentRouter)
 
