@@ -14,7 +14,7 @@ const permissionSchema = new Schema({
   role: {
     type: String,
     enum: ['owner', 'editor', 'viewer'],
-    required: true
+    default: 'viewer'
   }
 })
 

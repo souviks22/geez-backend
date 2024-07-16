@@ -3,12 +3,13 @@ import { Schema, model } from "mongoose"
 const documentSchema = new Schema({
 	title: {
 		type: String,
-		required: true
+		default: `Untitled Document ${Date.now()}`
 	},
 	owner: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
-		required: true
+		required: true,
+		immutable: true
 	},
 	content: {
 		type: String,
