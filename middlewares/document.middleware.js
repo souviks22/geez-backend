@@ -10,18 +10,19 @@ export const isDocPresent = catchAsync(async (req, _res, next) => {
   next()
 })
 
-export const isUpdatable = catchAsync(async (req, _res, next) => {
-  const { update } = req.body
-  const nonUpdatables = ['owner']
-  for (const key in update) {
-    for (const field of nonUpdatables) {
-      if (key === field) {
-        throw new Error(`You cannot change the existing ${key}.`)
+export const updateExclusionChecker = (...immutable) => {
+  return catchAsync(async (req, _res, next) => {
+    const { update } = req.body
+    for (const key in update) {
+      for (const field of immutable) {
+        if (key === field) {
+          throw new Error(`You cannot change the existing ${key}.`)
+        }
       }
     }
-  }
-  next()
-})
+    next()
+  })
+}
 
 export const permissionChecker = role => {
   return catchAsync(async (req, _res, next) => {
