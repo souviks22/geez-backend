@@ -12,8 +12,8 @@ import { socketRouter } from "../routers/socket.router.js"
 process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
 mongoose.connect(process.env.DB_URL)
-    .then(() => console.log('Database Connected'))
-    .catch(console.error)
+  .then(() => console.log('Database Connected'))
+  .catch(console.error)
 
 const app = express()
 
@@ -28,19 +28,19 @@ const io = new SocketIO(server, { cors: '*' })
 socketRouter(io)
 
 app.get('/', (_req, res) => {
-    res.json({
-        success: true,
-        message: 'Welcome to the API'
-    })
+  res.status(200).json({
+    success: true,
+    message: 'Welcome to the API'
+  })
 })
 
 app.get('*', (_req, res) => {
-    res.json({
-        success: false,
-        message: 'No API route exists'
-    })
+  res.status(404).json({
+    success: false,
+    message: 'No API route exists'
+  })
 })
 
 server.listen(process.env.PORT, () => {
-    console.log(`Server is active at PORT ${process.env.PORT}`)
+  console.log(`Server is active at PORT ${process.env.PORT}`)
 })
