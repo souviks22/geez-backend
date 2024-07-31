@@ -12,8 +12,9 @@ const documentSchema = new Schema({
 		immutable: true
 	},
 	content: {
-		type: String,
-		default: ''
+		type: Schema.Types.ObjectId,
+		ref: 'Content',
+		required: true
 	},
 	visibility: {
 		type: String,
