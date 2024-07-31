@@ -1,5 +1,15 @@
+import ShareDB from "sharedb"
+import ShareDbMongo from "sharedb-mongo"
+import WebSocketJSONStream from "@teamwork/websocket-json-stream"
+
+import { slateType } from "slate-ot"
 import { isDocPresent, isAuthorized } from "../middlewares/socket.middleware.js"
-import { joinDocumentRoomHandler, leaveDocumentRoomHandler, updateDocumentContentHandler } from "../controllers/socket.controller.js"
+
+process.env.NODE_ENV !== 'production' && process.loadEnvFile()
+
+ShareDB.types.register(slateType)
+const db = new ShareDbMongo(process.env.DB_URL)
+const otServer = new ShareDB({ db, presence: true })
 
 export const socketRouter = io => {
   io.use(isDocPresent)
@@ -14,11 +24,9 @@ export const socketRouter = io => {
         socket.emit('error', error)
       }
     })
-    const withSocket = func => parameters => func(socket, parameters)
-    socket.on('join-document-room', withSocket(joinDocumentRoomHandler))
-    socket.on('leave-document-room', withSocket(leaveDocumentRoomHandler))
-    socket.on('update-document-content', withSocket(updateDocumentContentHandler))
-    socket.on('error', console.error)
+    
+    const stream = new WebSocketJSONStream(socket)
+    otServer.listen(stream)
   })
 
   io.on('connection_error', console.error)
