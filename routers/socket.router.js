@@ -9,7 +9,7 @@ process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
 ShareDB.types.register(slateType)
 const db = new ShareDbMongo(process.env.DB_URL)
-const otServer = new ShareDB({ db, presence: true })
+const otServer = new ShareDB({ db, presence: true, doNotForwardSendPresenceErrorsToClient: true })
 
 export const socketRouter = io => {
   io.use(isDocPresent)
@@ -24,7 +24,7 @@ export const socketRouter = io => {
         socket.emit('error', error)
       }
     })
-    
+
     const stream = new WebSocketJSONStream(socket)
     otServer.listen(stream)
   })

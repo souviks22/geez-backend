@@ -18,7 +18,7 @@ export const isAuthorized = catchIO(async (socket, next) => {
   const { docId, role } = socket.handshake.query
   const { visibility } = await Document.findById(docId)
   if (visibility === 'public' && role === 'viewer') return next()
-  const { token } = socket.handshake.auth
+  const { token } = socket.handshake.headers.cookie
   if (!token) throw new Error('You are not authorized.')
   const { _id } = jwt.verify(token, process.env.NEXTAUTH_SECRET)
   const user = await User.findById(_id)
