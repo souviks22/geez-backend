@@ -1,5 +1,5 @@
 import { Document } from "../models/Document.js"
-import { Content } from "../models/Content.js"
+import { Editor } from "../models/Editor.js"
 import { Permission } from "../models/Permission.js"
 import { catchAsync } from "../errors/catch.js"
 import { getUserObjectId } from "../helper/auth.js"
@@ -16,9 +16,9 @@ export const getDocumentHandler = catchAsync(async (req, res) => {
 
 export const newDocumentHandler = catchAsync(async (req, res) => {
 	const _id = getUserObjectId(req)
-	const content = new Content()
-	await content.save()
-	const document = new Document({ owner: _id, content: content._id })
+	const editor = new Editor()
+	await editor.save()
+	const document = new Document({ owner: _id, content: editor._id })
 	await document.save()
 	const permission = new Permission({ document: document._id, user: _id, role: 'owner' })
 	await permission.save()

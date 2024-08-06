@@ -11,11 +11,11 @@ const emptyEditor = [
   }
 ]
 
-const contentSchema = new Schema({
-  editor: {
+const editorSchema = new Schema({
+  children: {
     type: Schema.Types.Mixed,
     default: emptyEditor
   }
 })
 
-export const Content = model('Content', contentSchema)
+export const Editor = model('Editor', editorSchema)
