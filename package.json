@@ -22,9 +22,6 @@
     "sharedb": "^5.0.2",
     "sharedb-mongo": "^5.0.0",
     "slate-ot": "^0.0.4",
-    "socket.io": "^4.7.4"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.21"
+    "ws": "^8.18.0"
   }
 }

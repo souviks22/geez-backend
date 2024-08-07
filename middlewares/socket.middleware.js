@@ -1,24 +1,26 @@
 import { User } from "../models/User.js"
 import { Document } from "../models/Document.js"
 import { Permission } from "../models/Permission.js"
-import { catchIO } from "../errors/catch.js"
+import { catchWS } from "../errors/catch.js"
 
 import jwt from "jsonwebtoken"
 
 process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
-export const isDocPresent = catchIO(async (socket, next) => {
-  const { docId } = socket.handshake.query
+export const isDocPresent = catchWS(async (context, next) => {
+  const { req } = context
+  const { docId } = req.query
   const document = await Document.findById(docId)
   if (!document) throw new Error('The document does not exist.')
   next()
 })
 
-export const isAuthorized = catchIO(async (socket, next) => {
-  const { docId, role } = socket.handshake.query
+export const isAuthorized = catchWS(async (context, next) => {
+  const { req } = context
+  const { docId, role } = req.query
   const { visibility } = await Document.findById(docId)
   if (visibility === 'public' && role === 'viewer') return next()
-  const { token } = socket.handshake.headers.cookie
+  const { token } = req.cookies
   if (!token) throw new Error('You are not authorized.')
   const { _id } = jwt.verify(token, process.env.NEXTAUTH_SECRET)
   const user = await User.findById(_id)
@@ -27,6 +29,5 @@ export const isAuthorized = catchIO(async (socket, next) => {
   if (!permission || (role === 'editor' && permission.role === 'viewer')) {
     throw new Error('You are not authorized.')
   }
-  socket.data.user = user
   next()
 })

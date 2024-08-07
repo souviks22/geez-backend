@@ -4,7 +4,7 @@ import http from "http"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 
-import { Server as SocketIO } from "socket.io"
+import { WebSocketServer } from "ws"
 import { userRouter } from "../routers/user.router.js"
 import { documentRouter } from "../routers/document.router.js"
 import { socketRouter } from "../routers/socket.router.js"
@@ -25,8 +25,8 @@ app.use('/users', userRouter)
 app.use('/documents', documentRouter)
 
 const server = http.createServer(app)
-const io = new SocketIO(server, { cors: '*' })
-socketRouter(io)
+const wsServer = new WebSocketServer({ server })
+socketRouter(wsServer)
 
 app.get('/', (_req, res) => {
   res.status(200).json({

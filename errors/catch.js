@@ -21,8 +21,8 @@ export const catchAsync = callback => {
 	}
 }
 
-export const catchIO = callback => {
-	return (socket, next) => {
-		callback(socket, next).catch(error => next(error))
+export const catchWS = callback => {
+	return (context, next) => {
+		callback(context, next).catch(error => next(error))
 	}
 }
