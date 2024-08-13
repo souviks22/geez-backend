@@ -16,11 +16,13 @@ mongoose.connect(process.env.DB_URL)
   .catch(console.error)
 
 const app = express()
-
-app.use(cors())
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}))
 app.use(express.json())
-app.use(express.static('static'))
 app.use(cookieParser())
+app.use(express.static('static'))
 app.use('/users', userRouter)
 app.use('/documents', documentRouter)
 

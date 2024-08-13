@@ -4,8 +4,14 @@ import { catchAsync } from "../errors/catch.js"
 
 import jwt from "jsonwebtoken"
 
-const isProduction = process.env.NODE_ENV === 'production'
-!isProduction && process.loadEnvFile()
+process.env.NODE_ENV !== 'production' && process.loadEnvFile()
+
+const cookieOptions = {
+	httpOnly: true,
+	secure: true,
+	sameSite: 'None',
+	maxAge: 7 * 24 * 60 * 60 * 1000
+}
 
 export const signupHandler = catchAsync(async (req, res) => {
 	const { oauthId, name, email, image } = req.body
@@ -13,12 +19,7 @@ export const signupHandler = catchAsync(async (req, res) => {
 	await user.save()
 	const { _id } = user
 	const token = jwt.sign({ _id }, process.env.NEXTAUTH_SECRET, { expiresIn: process.env.JWT_EXPIRATION_TIME })
-	res.cookie('token', token, {
-		httpOnly: true,
-		secure: isProduction,
-		sameSite: 'Strict',
-		maxAge: 7 * 24 * 60 * 60 * 1000
-	})
+	res.cookie('geez-editor-token', token, cookieOptions)
 	res.status(201).json({
 		success: true,
 		message: 'We are pleased to have you.'
@@ -29,12 +30,7 @@ export const signinHandler = catchAsync(async (req, res) => {
 	const { oauthId } = req.body
 	const { _id } = await User.findOne({ oauthId })
 	const token = jwt.sign({ _id }, process.env.NEXTAUTH_SECRET, { expiresIn: process.env.JWT_EXPIRATION_TIME })
-	res.cookie('token', token, {
-		httpOnly: true,
-		secure: isProduction,
-		sameSite: 'Strict',
-		maxAge: 7 * 24 * 60 * 60 * 1000
-	})
+	res.cookie('geez-editor-token', token, cookieOptions)
 	res.status(201).json({
 		success: true,
 		message: 'We are obliged you are here.'
