@@ -1,7 +1,7 @@
 import { Document } from "../models/Document.js"
+import { User } from "../models/User.js"
 import { Permission } from "../models/Permission.js"
 import { catchAsync } from "../errors/catch.js"
-import { getUserObjectId } from "../helper/auth.js"
 
 export const isDocPresent = catchAsync(async (req, _res, next) => {
   const { docId } = req.params
@@ -29,7 +29,12 @@ export const permissionChecker = role => {
     const { docId } = req.params
     const { visibility } = await Document.findById(docId)
     if (visibility === 'public' && role === 'viewer') return next()
-    const _id = getUserObjectId(req)
+    const { authorization } = req.headers
+    if (!authorization || authorization.split(' ').length !== 2) throw new Error('Missing authorization details.')
+    const token = authorization.split(' ')[1]
+    const { _id } = jwt.verify(token, process.env.NEXTAUTH_SECRET)
+    const user = await User.findById(_id)
+    if (!user) throw new Error('You are not authorized.')
     const permission = await Permission.findOne({ document: docId, user: _id })
     if (!permission || (role === 'editor' && permission.role === 'viewer') || (role === 'owner' && permission.role !== 'owner')) {
       throw new Error('You are not authorized.')

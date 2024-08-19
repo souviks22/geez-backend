@@ -2,7 +2,6 @@ import express from "express"
 import mongoose from "mongoose"
 import http from "http"
 import cors from "cors"
-import cookieParser from "cookie-parser"
 
 import { WebSocketServer } from "ws"
 import { userRouter } from "../routers/user.router.js"
@@ -17,12 +16,9 @@ mongoose.connect(process.env.DB_URL)
 
 const app = express()
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true
+  origin: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : 'http://localhost:3000'
 }))
 app.use(express.json())
-app.use(cookieParser())
-app.use(express.static('static'))
 app.use('/users', userRouter)
 app.use('/documents', documentRouter)
 

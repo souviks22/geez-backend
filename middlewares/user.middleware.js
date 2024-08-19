@@ -7,8 +7,9 @@ process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
 export const isAuthenticated = (self = false) => {
   return catchAsync(async (req, _res, next) => {
-    const { token } = req.cookies
-    if (!token) throw new Error('Missing authorization details.')
+    const { authorization } = req.headers
+    if (!authorization || authorization.split(' ').length !== 2) throw new Error('Missing authorization details.')
+    const token = authorization.split(' ')[1]
     const { _id } = jwt.verify(token, process.env.NEXTAUTH_SECRET)
     const user = await User.findById(_id)
     if (!user) throw new Error('You are not authorized.')

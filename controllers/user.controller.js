@@ -6,23 +6,16 @@ import jwt from "jsonwebtoken"
 
 process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
-const cookieOptions = {
-	httpOnly: true,
-	secure: true,
-	sameSite: 'None',
-	maxAge: 7 * 24 * 60 * 60 * 1000
-}
-
 export const signupHandler = catchAsync(async (req, res) => {
 	const { oauthId, name, email, image } = req.body
 	const user = new User({ oauthId, name, email, image })
 	await user.save()
 	const { _id } = user
 	const token = jwt.sign({ _id }, process.env.NEXTAUTH_SECRET, { expiresIn: process.env.JWT_EXPIRATION_TIME })
-	res.cookie('geez-editor-token', token, cookieOptions)
 	res.status(201).json({
 		success: true,
-		message: 'We are pleased to have you.'
+		message: 'We are pleased to have you.',
+		data: { token, _id }
 	})
 })
 
@@ -30,10 +23,10 @@ export const signinHandler = catchAsync(async (req, res) => {
 	const { oauthId } = req.body
 	const { _id } = await User.findOne({ oauthId })
 	const token = jwt.sign({ _id }, process.env.NEXTAUTH_SECRET, { expiresIn: process.env.JWT_EXPIRATION_TIME })
-	res.cookie('geez-editor-token', token, cookieOptions)
 	res.status(201).json({
 		success: true,
-		message: 'We are obliged you are here.'
+		message: 'We are obliged you are here.',
+		data: { token, _id }
 	})
 })
 

@@ -20,8 +20,9 @@ export const isAuthorized = catchWS(async (context, next) => {
   const { docId, role } = req.query
   const { visibility } = await Document.findById(docId)
   if (visibility === 'public' && role === 'viewer') return next()
-  const { token } = req.cookies
-  if (!token) throw new Error('You are not authorized.')
+  const { authorization } = req.headers
+  if (!authorization || authorization.split(' ').length !== 2) throw new Error('Missing authorization details.')
+  const token = authorization.split(' ')[1]
   const { _id } = jwt.verify(token, process.env.NEXTAUTH_SECRET)
   const user = await User.findById(_id)
   if (!user) throw new Error('You are not authorized.')
