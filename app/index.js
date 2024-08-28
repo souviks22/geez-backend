@@ -7,6 +7,7 @@ import { WebSocketServer } from "ws"
 import { userRouter } from "../routers/user.router.js"
 import { documentRouter } from "../routers/document.router.js"
 import { socketRouter } from "../routers/socket.router.js"
+import { permissionRouter } from "../routers/permission.router.js"
 
 process.env.NODE_ENV !== 'production' && process.loadEnvFile()
 
@@ -21,6 +22,7 @@ app.use(cors({
 app.use(express.json())
 app.use('/users', userRouter)
 app.use('/documents', documentRouter)
+app.use('/permissions', permissionRouter)
 
 const server = http.createServer(app)
 const wsServer = new WebSocketServer({ server })

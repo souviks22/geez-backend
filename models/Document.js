@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose"
+import { Schema, model, Types } from "mongoose"
 
 const documentSchema = new Schema({
 	title: {
@@ -13,8 +13,7 @@ const documentSchema = new Schema({
 	},
 	content: {
 		type: Schema.Types.ObjectId,
-		ref: 'Content',
-		required: true
+		default: new Types.ObjectId()
 	},
 	visibility: {
 		type: String,
