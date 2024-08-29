@@ -1,19 +1,19 @@
 import { Router } from "express"
 import { body } from "express-validator"
-import { getPermissionsHandler, newPermissionHandler, updatePermissionHandler } from "../controllers/permission.controller.js"
-import { isDocPresent,isAuthorized ,isPermissionPresent} from "../middlewares/permission.middleware.js"
+import { getUsersOfDocumentHandler, getDocumentsOfUserHandler, newPermissionHandler, updatePermissionHandler } from "../controllers/permission.controller.js"
+import { isDocPresent, isAuthorized, isPermissionPresent } from "../middlewares/permission.middleware.js"
 import { isAuthenticated } from "../middlewares/user.middleware.js"
 
 export const permissionRouter = Router()
 
 permissionRouter.get('/documents/:docId',
     isAuthenticated(),
-    getPermissionsHandler('document')
+    getUsersOfDocumentHandler
 )
 
 permissionRouter.get('/users/:userId',
     isAuthenticated(),
-    getPermissionsHandler('user')
+    getDocumentsOfUserHandler
 )
 
 permissionRouter.post('/new-permission',
@@ -38,5 +38,5 @@ permissionRouter.delete('/:permissionId',
     isDocPresent,
     isPermissionPresent,
     isAuthorized,
-    
+
 )

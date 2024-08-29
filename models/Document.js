@@ -1,9 +1,9 @@
-import { Schema, model, Types } from "mongoose"
+import { Schema, model } from "mongoose"
 
 const documentSchema = new Schema({
 	title: {
 		type: String,
-		default: `Untitled Document ${Date.now()}`
+		default: 'Untitled Document'
 	},
 	owner: {
 		type: Schema.Types.ObjectId,
@@ -12,8 +12,7 @@ const documentSchema = new Schema({
 		immutable: true
 	},
 	content: {
-		type: Schema.Types.ObjectId,
-		default: new Types.ObjectId()
+		type: Schema.Types.ObjectId
 	},
 	visibility: {
 		type: String,
@@ -21,12 +20,10 @@ const documentSchema = new Schema({
 		default: 'private'
 	},
 	createdAt: {
-		type: Date,
-		default: new Date()
+		type: Date
 	},
 	updatedAt: {
-		type: Date,
-		default: new Date()
+		type: Date
 	}
 })
 

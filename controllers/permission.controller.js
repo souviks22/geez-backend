@@ -1,18 +1,32 @@
 import { Permission } from "../models/Permission.js"
 import { catchAsync } from "../errors/catch.js"
 
-export const getPermissionsHandler = by => {
-    return catchAsync(async (req, res) => {
-        const { docId, userId } = req.params
-        const options = by === 'document' ? { document: docId } : { user: userId }
-        const permissions = await Permission.find(options)
-        res.status(200).json({
-            success: true,
-            message: 'Permission retrieved',
-            data: { permissions }
-        })
+export const getUsersOfDocumentHandler = catchAsync(async (req, res) => {
+    const { docId } = req.params
+    const permissions = await Permission.find({ document: docId }).populate('user')
+    const users = []
+    const { role } = req.query
+    for (const permission of permissions) {
+        if (!role || role === permission.role) users.push(permission.user)
+    }
+    res.status(200).json({
+        success: true,
+        message: 'Permission retrieved',
+        data: { users }
     })
-}
+})
+
+export const getDocumentsOfUserHandler = catchAsync(async (req, res) => {
+    const { userId } = req.params
+    const permissions = await Permission.find({ user: userId }).populate('document')
+    const documents = []
+    for (const permission of permissions) documents.push(permission.document)
+    res.status(200).json({
+        success: true,
+        message: 'Permission retrieved',
+        data: { documents }
+    })
+})
 
 export const newPermissionHandler = catchAsync(async (req, res) => {
     const { docId, userId, role } = req.body

@@ -1,3 +1,4 @@
+import { Types } from "mongoose"
 import { Document } from "../models/Document.js"
 import { Permission } from "../models/Permission.js"
 import { catchAsync } from "../errors/catch.js"
@@ -15,7 +16,12 @@ export const getDocumentHandler = catchAsync(async (req, res) => {
 
 export const newDocumentHandler = catchAsync(async (req, res) => {
 	const _id = getUserObjectId(req)
-	const document = new Document({ owner: _id })
+	const document = new Document({
+		owner: _id,
+		content: new Types.ObjectId(),
+		createdAt: new Date(),
+		updatedAt: new Date()
+	})
 	await document.save()
 	const permission = new Permission({ document: document._id, user: _id, role: 'owner' })
 	await permission.save()
