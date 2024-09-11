@@ -1,6 +1,5 @@
 import express from "express"
 import mongoose from "mongoose"
-import http from "http"
 import cors from "cors"
 
 import { WebSocketServer } from "ws"
@@ -24,10 +23,6 @@ app.use('/users', userRouter)
 app.use('/documents', documentRouter)
 app.use('/permissions', permissionRouter)
 
-const server = http.createServer(app)
-const wsServer = new WebSocketServer({ server })
-socketRouter(wsServer)
-
 app.get('/', (_req, res) => {
   res.status(200).json({
     success: true,
@@ -42,6 +37,9 @@ app.get('*', (_req, res) => {
   })
 })
 
-server.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log(`Server is active at PORT ${process.env.PORT}`)
 })
+
+const wsServer = new WebSocketServer({ server })
+socketRouter(wsServer)

@@ -3,6 +3,8 @@ import { User } from "../models/User.js"
 import { Permission } from "../models/Permission.js"
 import { catchAsync } from "../errors/catch.js"
 
+import jwt from "jsonwebtoken"
+
 export const isDocPresent = catchAsync(async (req, _res, next) => {
   const { docId } = req.params
   const document = await Document.findById(docId)
