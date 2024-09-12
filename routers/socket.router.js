@@ -20,11 +20,15 @@ otServer.use('connect', isAuthorized)
 
 export const socketRouter = wsServer => {
   wsServer.on('connection', (socket, request) => {
-    const { docId, role, token } = parse(request.url, true).query
-    if (token === 'undefined') return
-    request.query = { docId, role, token }
-    const stream = new WebSocketJSONStream(socket)
-    otServer.listen(stream, request)
+    try {
+      const { docId, role, token } = parse(request.url, true).query
+      if (!docId || !role || !token || token === 'undefined') throw new Error('Connection specifications are incomplete.')
+      request.query = { docId, role, token }
+      const stream = new WebSocketJSONStream(socket)
+      otServer.listen(stream, request)
+    } catch (error) {
+      socket.close(1011, error.message)
+    }
   })
   wsServer.on('error', console.error)
 }
