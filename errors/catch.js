@@ -20,9 +20,3 @@ export const catchAsync = callback => {
 		}
 	}
 }
-
-export const catchWS = callback => {
-	return (context, next) => {
-		callback(context, next).catch(error => next(error))
-	}
-}

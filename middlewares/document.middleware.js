@@ -5,14 +5,16 @@ import { catchAsync } from "../errors/catch.js"
 
 import jwt from "jsonwebtoken"
 
-export const isDocPresent = catchAsync(async (req, _res, next) => {
-  const { docId } = req.params
-  const document = await Document.findById(docId)
-  if (!document) throw new Error('The document does not exist.')
-  next()
-})
+export const isDocPresent = (params = true) => {
+  return catchAsync(async (req, _res, next) => {
+    const { docId } = params ? req.params : req.body
+    const document = await Document.findById(docId)
+    if (!document) throw new Error('The document does not exist.')
+    next()
+  })
+}
 
-export const updateExclusionChecker = (...immutable) => {
+export const isUpdatableExcept = (...immutable) => {
   return catchAsync(async (req, _res, next) => {
     const { update } = req.body
     for (const key in update) {
@@ -26,9 +28,10 @@ export const updateExclusionChecker = (...immutable) => {
   })
 }
 
-export const permissionChecker = role => {
+export const isAuthorized = (intendedRole, params = true) => {
   return catchAsync(async (req, _res, next) => {
-    const { docId } = req.params
+    const { docId, role: desiredRole } = params ? req.params : req.body
+    const role = params ? intendedRole : desiredRole
     const { visibility } = await Document.findById(docId)
     if (visibility === 'public' && role === 'viewer') return next()
     const { authorization } = req.headers

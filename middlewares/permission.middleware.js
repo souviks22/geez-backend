@@ -1,14 +1,6 @@
-import { Document } from "../models/Document.js"
 import { Permission } from "../models/Permission.js"
 import { catchAsync } from "../errors/catch.js"
 import { getUserObjectId } from "../helper/auth.js"
-
-export const isDocPresent = catchAsync(async (req, _res, next) => {
-    const { docId } = req.body
-    const document = await Document.findById(docId)
-    if (!document) throw new Error('The document does not exist.')
-    next()
-})
 
 export const isAuthorized = catchAsync(async (req, _res, next) => {
     const { docId } = req.body

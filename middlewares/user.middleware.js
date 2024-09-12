@@ -21,7 +21,7 @@ export const isAuthenticated = (self = false) => {
   })
 }
 
-export const userExistenceChecker = flag => {
+export const isUserPresent = flag => {
   return catchAsync(async (req, _res, next) => {
     const { oauthId } = req.body
     const user = await User.findOne({ oauthId })
