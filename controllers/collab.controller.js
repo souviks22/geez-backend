@@ -3,11 +3,10 @@ import { User } from "../models/User.js"
 import { catchAsync } from "../errors/catch.js"
 import { getUserObjectId } from "../helper/auth.js"
 
-process.env.NODE_ENV !== 'production' && process.loadEnvFile()
-
-const liveblocks = new Liveblocks({
-    secret: process.env.LIVEBLOCKS_SECRET
-})
+const isProduction = process.env.NODE_ENV === 'production'
+!isProduction && process.loadEnvFile()
+const secret = isProduction ? process.env.LIVEBLOCKS_PROD_SECRET : process.env.LIVEBLOCKS_DEV_SECRET
+const liveblocks = new Liveblocks({ secret })
 
 export const liveblocksAuthHandler = catchAsync(async (req, res) => {
     const userId = getUserObjectId(req)
