@@ -29,6 +29,16 @@ export const getDocumentsOfUserHandler = catchAsync(async (req, res) => {
     })
 })
 
+export const getSpecificPermissionHandler = catchAsync(async (req, res) => {
+    const { docId, userId } = req.params
+    const permission = await Permission.findOne({ document: docId, user: userId })
+    res.status(200).json({
+        success: true,
+        message: 'Permission retrieved',
+        data: { permission }
+    })
+})
+
 export const newPermissionHandler = catchAsync(async (req, res) => {
     const { docId, email, role } = req.body
     const users = await User.find({ email })
